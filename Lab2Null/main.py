@@ -37,9 +37,19 @@ for cond in finishcond:
 
 condition_reg = {}
 condition_path_num = {}
-maxpath = 0
+
 for cond in conditions:
     condition_reg.update({cond: ""})
+
+temp_automat = list(automat)
+for i in automat:
+    if i[0] == i[2]:
+        condition_reg[i[0]] += "("+i[1]+")*"
+        temp_automat.remove(i)
+automat = list(temp_automat)
+
+maxpath = 0
+for cond in conditions:
     pathnum = 0
     for line in automat:
         if line[0] == cond or line[2] == cond:
@@ -57,6 +67,7 @@ for i in range(0, maxpath+1):
 # print(ordered_conditions)         #Состояния для исключения (в нужном порядке)
 
 # print(automat)                    #Автомат до изменения
+
 
 for deleting_cond in ordered_conditions:
     additional_rules = []
