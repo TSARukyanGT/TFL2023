@@ -38,6 +38,32 @@ for cond in finishcond:
 condition_reg = {}
 condition_path_num = {}
 
+
+for cond in conditions:
+    condition_reg.update({cond: ""})
+
+temp_automat = list(automat)
+for i in automat:
+    if i[0] == i[2]:
+        if len(i[1]) == 1:
+            if condition_reg[i[0]] == "":
+                condition_reg[i[0]] += i[1] + "*"
+            elif condition_reg[i[0]][-2:] == ")*":
+                condition_reg[i[0]] = condition_reg[i[0]][:-2] + "|" + i[1] + ")*"
+            else:
+                condition_reg[i[0]] = "(" + condition_reg[i[0]][:-1] + "|" + i[1] + ")*"
+        else:
+            if condition_reg[i[0]] == "":
+                condition_reg[i[0]] += "("+i[1]+")*"
+            elif condition_reg[i[0]][-2:] == ")*":
+                condition_reg[i[0]] = condition_reg[i[0]][:-2] + "|" + i[1] + ")*"
+            else:
+                condition_reg[i[0]] = "(" + condition_reg[i[0]][:-1] + "|" + i[1] + ")*"
+        temp_automat.remove(i)
+automat = list(temp_automat)
+
+maxpath = 0
+
 for cond in conditions:
     condition_reg.update({cond: ""})
 
@@ -63,7 +89,9 @@ for i in range(0, maxpath+1):
     for cond in condition_path_num:
         if i == condition_path_num[cond] and cond != 'S' and cond != 'F':
             ordered_conditions.append(cond)
-
+            
+# ordered_conditions.remove(startcond)
+# ordered_conditions.append(startcond)
 # print(ordered_conditions)         #Состояния для исключения (в нужном порядке)
 
 # print(automat)                    #Автомат до изменения
@@ -81,7 +109,20 @@ for deleting_cond in ordered_conditions:
         if (i[0] == deleting_cond) or (i[2] == deleting_cond):
             temp_automat.remove(i)
         elif i[0] == i[2]:
-            condition_reg[i[0]] += "("+i[1]+")*"
+            if len(i[1]) == 1:
+                if condition_reg[i[0]] == "":
+                    condition_reg[i[0]] += i[1] + "*"
+                elif condition_reg[i[0]][-2:] == ")*":
+                    condition_reg[i[0]] = condition_reg[i[0]][:-2] + "|" + i[1] + ")*"
+                else:
+                    condition_reg[i[0]] = "(" + condition_reg[i[0]][:-1] + "|" + i[1] + ")*"
+            else:
+                if condition_reg[i[0]] == "":
+                    condition_reg[i[0]] += "(" + i[1] + ")*"
+                elif condition_reg[i[0]][-2:] == ")*":
+                    condition_reg[i[0]] = condition_reg[i[0]][:-2] + "|" + i[1] + ")*"
+                else:
+                    condition_reg[i[0]] = "(" + condition_reg[i[0]][:-1] + "|" + i[1] + ")*"
             temp_automat.remove(i)
 
 
@@ -95,7 +136,7 @@ for deleting_cond in ordered_conditions:
             if (automat[i][0] == automat[j][0]) and (automat[i][2] == automat[j][2]) and (automat[i][1] != automat[j][1]):
                 temp_automat.remove(automat[i])
                 temp_automat.remove(automat[j])
-                temp_automat.append([automat[i][0], "("+automat[i][1]+" | "+automat[j][1]+")", automat[i][2]])
+                temp_automat.append([automat[i][0], "("+automat[i][1]+"|"+automat[j][1]+")", automat[i][2]])
 
 ##### Конец "схлопывания". Если закомментировать код посередине - будет правильный набор, но эти правила разделит на 2 части
     automat = list(temp_automat)
