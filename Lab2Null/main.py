@@ -31,9 +31,9 @@ for line in text:
     if not second in conditions:
         conditions.append(second)
 conditions.extend(['S', 'F'])
-original_automat.append(['S', '', startcond])
+original_automat.append(['S', '$', startcond])
 for cond in finishcond:
-    original_automat.append([cond, '', 'F'])
+    original_automat.append([cond, '$', 'F'])
 
 original_cond_reg = {}
 condition_path_num = {}
@@ -99,6 +99,7 @@ def accumulation(aut):
         if res_reg != "":
             res_reg += "|"
         res_reg += rule[1]
+    res_reg = res_reg.replace('$', "")
     return res_reg
 
 result_regex = ""
