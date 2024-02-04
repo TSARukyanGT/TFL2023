@@ -158,7 +158,7 @@ for ord_cons in orders:
     else:
         temp_reg = result_regex
     print("Сравнение {0} и {1}: Длина {2} против {3}".format(temp_reg, reg, len(result_regex), len(reg)))
-    if result_regex == "" or len(reg) < len(result_regex):
+    if result_regex == "" or len(reg) < len(result_regex) or (len(reg) == len(result_regex) and reg[0] == "("):
         print("Замена {0} на {1}".format(temp_reg, reg))
         result_regex = reg
 
